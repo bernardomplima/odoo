@@ -1,19 +1,15 @@
-# -*- coding: utf-8 -*-
+from odoo import models, api, _
+from odoo.exceptions import ValidationError
 
-# from odoo import models, fields, api
+class MrpProduction(models.Model):
+    _inherit = 'mrp.production'
 
-
-# class my_module(models.Model):
-#     _name = 'my_module.my_module'
-#     _description = 'my_module.my_module'
-
-#     name = fields.Char()
-#     value = fields.Integer()
-#     value2 = fields.Float(compute="_value_pc", store=True)
-#     description = fields.Text()
-#
-#     @api.depends('value')
-#     def _value_pc(self):
-#         for record in self:
-#             record.value2 = float(record.value) / 100
-
+    @api.constrains('product_qty', 'bom_id')
+    def _check_bom_multiple(self):
+        for production in self:
+            bom = production.bom_id
+            if bom and bom.product_qty > 0:
+                if production.product_qty % bom.product_qty != 0:
+                    raise ValidationError(_(
+                        "A quantidade a produzir (%s) deve ser um múltiplo da quantidade definida na Lista de Materiais (%s)."
+                    ) % (production.product_qty, bom.product_qty))
