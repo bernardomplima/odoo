@@ -1,16 +1,19 @@
-from odoo import models, api
-from odoo.exceptions import UserError
+# -*- coding: utf-8 -*-
 
-class MrpProduction(models.Model):
-    _inherit = 'mrp.production'
+# from odoo import models, fields, api
 
-    @api.constrains('product_qty')
-    def _check_bom_multiple(self):
-        for record in self:
-            bom = self.env['mrp.bom']._bom_find(product=record.product_id, company_id=record.company_id.id)
-            if bom:
-                base_qty = bom.product_qty or 1
-                if record.product_qty % base_qty != 0:
-                    raise UserError(
-                        f"A quantidade da ordem de produção ({record.product_qty}) deve ser um múltiplo de {base_qty} conforme definido na Lista de Materiais (BOM)."
-                    )
+
+# class my_module(models.Model):
+#     _name = 'my_module.my_module'
+#     _description = 'my_module.my_module'
+
+#     name = fields.Char()
+#     value = fields.Integer()
+#     value2 = fields.Float(compute="_value_pc", store=True)
+#     description = fields.Text()
+#
+#     @api.depends('value')
+#     def _value_pc(self):
+#         for record in self:
+#             record.value2 = float(record.value) / 100
+
